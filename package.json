@@ -1,0 +1,29 @@
+{
+  "name": "blv-api",
+  "version": "1.0.0",
+  "description": "The Backend to BLV",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./src ./test --ext .ts",
+    "lint:fix": "eslint ./src ./test --ext .ts --fix",
+    "style:check": "prettier --check 'src/**/*.ts' 'test/**/*.ts'",
+    "style:fix": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Express",
+    "NodeJS",
+    "MongoDB",
+    "Mongoose",
+    "Typescript",
+    "Api"
+  ],
+  "author": "Jadir Junior",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
+    "prettier": "^2.4.1"
+  }
+}
