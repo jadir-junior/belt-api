@@ -1,3 +1,4 @@
+import * as database from './database';
 import * as http from 'http';
 
 import express, { Application } from 'express';
@@ -14,6 +15,7 @@ export class SetupServer {
 
   public async init(): Promise<void> {
     this.setupExpress();
+    await this.databaseSetup();
   }
 
   private setupExpress(): void {
@@ -30,6 +32,10 @@ export class SetupServer {
     );
   }
 
+  private async databaseSetup(): Promise<void> {
+    await database.connect();
+  }
+
   public getApp(): Application {
     return this.app;
   }
@@ -41,6 +47,7 @@ export class SetupServer {
   }
 
   public async close(): Promise<void> {
+    await database.close();
     if (this.server) {
       await new Promise((resolve, reject) => {
         this.server?.close((error) => {
