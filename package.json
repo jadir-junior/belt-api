@@ -31,10 +31,19 @@
     ]
   },
   "devDependencies": {
+    "@types/express-pino-logger": "^4.0.2",
+    "@types/pino": "^6.3.11",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "eslint": "^7.32.0",
     "husky": "^7.0.2",
+    "pino-pretty": "^7.0.1",
     "prettier": "^2.4.1"
+  },
+  "dependencies": {
+    "@types/config": "^0.0.39",
+    "config": "^3.3.6",
+    "express-pino-logger": "^6.0.0",
+    "pino": "^6.13.3"
   }
 }

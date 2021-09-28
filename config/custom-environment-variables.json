@@ -1,0 +1,9 @@
+{
+  "App": {
+    "port": "PORT",
+    "logger": {
+      "enabled": true,
+      "lever": "info"
+    }
+  }
+}
