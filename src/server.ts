@@ -30,11 +30,27 @@ export class SetupServer {
     );
   }
 
+  public getApp(): Application {
+    return this.app;
+  }
+
   public start(): void {
     this.server = this.app.listen(this.port, () => {
       logger.info(`Server listing on port: ${this.port}`);
     });
   }
 
-  public async close(): Promise<void> {}
+  public async close(): Promise<void> {
+    if (this.server) {
+      await new Promise((resolve, reject) => {
+        this.server?.close((error) => {
+          if (error) {
+            return reject(error);
+          }
+
+          resolve(true);
+        });
+      });
+    }
+  }
 }
