@@ -8,7 +8,7 @@ import logger from './logger';
 
 export class SetupServer {
   private server?: http.Server;
-  private app: Application;
+  private app: Application = express();
 
   constructor(private port = 3000) {}
 
@@ -32,7 +32,7 @@ export class SetupServer {
 
   public start(): void {
     this.server = this.app.listen(this.port, () => {
-      logger.info('Server listing on port: ' + this.port);
+      logger.info(`Server listing on port: ${this.port}`);
     });
   }
 
