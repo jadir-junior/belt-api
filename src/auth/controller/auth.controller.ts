@@ -24,7 +24,6 @@ class AuthController {
                 .status(201)
                 .send({ accessToken: token, refreshToken: hash });
         } catch (error) {
-            console.log(error);
             return res.status(500).send(error);
         }
     }
