@@ -6,7 +6,7 @@
         "contact": {
             "email": "jadirjsjunior@gmail.com"
         },
-        "version": "0.0.0"
+        "version": "0.1.0"
     },
     "servers": [
         { "url": "http://localhost:3000/", "description": "development API" },
