@@ -3,12 +3,14 @@ import * as http from 'http';
 
 import express, { Application } from 'express';
 
+import { AuthRoutes } from './auth/auth.routes.config';
 import { CommonRoutesConfig } from './common/common.routes.config';
 import { UsersRoutes } from './users/users.routes.config';
 import cors from 'cors';
 import expressPino from 'express-pino-logger';
 import logger from './logger';
-import { AuthRoutes } from './auth/auth.routes.config';
+import swaggerDocs from './swagger.json';
+import swaggerUi from 'swagger-ui-express';
 
 export class SetupServer {
     private server?: http.Server;
@@ -20,6 +22,7 @@ export class SetupServer {
     public async init(): Promise<void> {
         this.setupExpress();
         this.setupRoutes();
+        await this.setupSwagger();
         await this.databaseSetup();
     }
 
@@ -34,6 +37,14 @@ export class SetupServer {
             cors({
                 origin: '*',
             })
+        );
+    }
+
+    private async setupSwagger(): Promise<void> {
+        await this.app.use(
+            '/api-docs',
+            swaggerUi.serve,
+            swaggerUi.setup(swaggerDocs)
         );
     }
 

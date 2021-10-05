@@ -17,10 +17,28 @@ class AuthMiddleware {
                     permissionFlags: user.permissionFlags,
                 };
                 return next();
+            } else {
+                res.status(400).send({
+                    errors: [
+                        {
+                            msg: 'Invalid password',
+                            param: 'password',
+                            location: 'verify user password',
+                        },
+                    ],
+                });
             }
+        } else {
+            res.status(400).send({
+                errors: [
+                    {
+                        msg: 'Invalid email',
+                        param: 'email',
+                        location: 'verify user email',
+                    },
+                ],
+            });
         }
-
-        res.status(400).send({ errors: ['Invalid email and/or password'] });
     }
 }
 

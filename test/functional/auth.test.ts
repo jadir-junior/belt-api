@@ -78,7 +78,31 @@ describe('Authentication endpoints', () => {
 
                 expect(response.status).toBe(400);
                 expect(response.body).toEqual({
-                    errors: ['Invalid email and/or password'],
+                    errors: [
+                        {
+                            location: 'verify user password',
+                            msg: 'Invalid password',
+                            param: 'password',
+                        },
+                    ],
+                });
+            });
+
+            it('should allow a POST to /login and verify if a email is not valid and throw a ERROR', async () => {
+                const response = await global.testRequest.post('/login').send({
+                    email: 'abc@email.com',
+                    password: '12345',
+                });
+
+                expect(response.status).toBe(400);
+                expect(response.body).toEqual({
+                    errors: [
+                        {
+                            location: 'verify user email',
+                            msg: 'Invalid email',
+                            param: 'email',
+                        },
+                    ],
                 });
             });
         });
