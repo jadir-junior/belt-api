@@ -1,8 +1,10 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 import { CreateUserDto } from '../dto/create.user.dto';
 import { PermissionFlags } from '../../common/enums/common.permissionflags.enum';
+import { User } from '../types/user.types';
 
+interface UserDocument extends User, Document {}
 class UsersDao {
     userSchema = new Schema(
         {
@@ -22,7 +24,7 @@ class UsersDao {
         }
     );
 
-    User = mongoose.model('Users', this.userSchema);
+    User = mongoose.model<UserDocument>('Users', this.userSchema);
 
     async addUser(userFields: CreateUserDto) {
         const user = new this.User({
@@ -31,6 +33,12 @@ class UsersDao {
         });
         await user.save();
         return user;
+    }
+
+    async getUserByEmailWithPassword(email: string) {
+        return this.User.findOne({ email })
+            .select('_id email permissionFlags +password')
+            .exec();
     }
 }
 

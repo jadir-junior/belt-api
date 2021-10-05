@@ -8,6 +8,7 @@ import { UsersRoutes } from './users/users.routes.config';
 import cors from 'cors';
 import expressPino from 'express-pino-logger';
 import logger from './logger';
+import { AuthRoutes } from './auth/auth.routes.config';
 
 export class SetupServer {
     private server?: http.Server;
@@ -18,7 +19,7 @@ export class SetupServer {
 
     public async init(): Promise<void> {
         this.setupExpress();
-        await this.setupRoutes();
+        this.setupRoutes();
         await this.databaseSetup();
     }
 
@@ -40,8 +41,9 @@ export class SetupServer {
         await database.connect();
     }
 
-    private async setupRoutes(): Promise<void> {
-        await this.routes.push(new UsersRoutes(this.app));
+    private setupRoutes(): void {
+        this.routes.push(new UsersRoutes(this.app));
+        this.routes.push(new AuthRoutes(this.app));
     }
 
     public getApp(): Application {
