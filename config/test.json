@@ -1,10 +1,10 @@
 {
-  "App": {
-    "database": {
-      "mongoUrl": "mongodb://localhost:27017/blv-test"
-    },
-    "logger": {
-      "enabled": false
+    "App": {
+        "database": {
+            "mongoUrl": "mongodb://localhost:27017/belt-test"
+        },
+        "logger": {
+            "enabled": false
+        }
     }
-  }
 }

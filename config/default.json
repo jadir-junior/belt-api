@@ -3,7 +3,7 @@
         "port": 3000,
         "secret": "Th1s1sS3cr3t",
         "database": {
-            "mongoUrl": "mongodb://localhost:27017/blv"
+            "mongoUrl": "mongodb://localhost:27017/belt"
         },
         "logger": {
             "enabled": true,

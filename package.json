@@ -1,7 +1,7 @@
 {
-    "name": "blv-api",
+    "name": "belt-api",
     "version": "0.1.0",
-    "description": "The Backend to BLV",
+    "description": "The Backend to belt",
     "main": "index.js",
     "scripts": {
         "build": "tsc",
