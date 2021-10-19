@@ -30,9 +30,26 @@ export class AuthRoutes extends CommonRoutesConfig {
                 tokenValidationMiddleware.decodedTokenAndGetId,
                 userMiddleware.valideUserExists,
                 jwtMiddleware.validJwtNeeded,
-                permissionValidationMiddleware.onlySameUserOrAdminCanDoThisActions
+                permissionValidationMiddleware.onlySameUserOrAdminCanDoThisAction
             )
             .get(usersController.getUserById);
+
+        this.app.patch('/auth/me/:userId', [
+            jwtMiddleware.validJwtNeeded,
+            body('email').isEmail().optional(),
+            body('password')
+                .isLength({ min: 5 })
+                .withMessage('Password must be 5 characters')
+                .optional(),
+            body('name').isString().optional(),
+            body('position').isString().optional(),
+            // see the permissionFlags work
+            body('permissionFlags').isInt().optional(),
+            bodyValidationMiddleware.verifyBodyFieldsErrors,
+            userMiddleware.validatePatchEmail,
+            permissionValidationMiddleware.onlySameUserOrAdminCanDoThisAction,
+            usersController.patch,
+        ]);
 
         return this.app;
     }

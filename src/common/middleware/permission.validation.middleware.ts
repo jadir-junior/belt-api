@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { PermissionFlags } from '../enums/common.permissionflags.enum';
 
 class PermissionValidationMiddeware {
-    async onlySameUserOrAdminCanDoThisActions(
+    async onlySameUserOrAdminCanDoThisAction(
         req: Request,
         res: Response,
         next: NextFunction
@@ -19,7 +19,7 @@ class PermissionValidationMiddeware {
             if (userPermissionFlags & PermissionFlags.ADMIN_PERMISSION) {
                 return next();
             } else {
-                return res.status(403).send();
+                return res.status(403).send({ error: 'Unauthorized' });
             }
         }
     }

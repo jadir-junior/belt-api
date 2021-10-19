@@ -19,6 +19,14 @@ class UsersController {
             res.status(200).send(user);
         }
     }
+
+    async patch(req: Request, res: Response) {
+        if (req.body.password) {
+            req.body.password = await argon2.hash(req.body.password);
+        }
+        const user = await usersService.patchById(req.params.userId, req.body);
+        res.status(200).send(user);
+    }
 }
 
 export default new UsersController();
