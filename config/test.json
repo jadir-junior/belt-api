@@ -1,5 +1,6 @@
 {
     "App": {
+        "secret": "Th1s1sS3cr3t",
         "database": {
             "mongoUrl": "mongodb://localhost:27017/belt-test"
         },
