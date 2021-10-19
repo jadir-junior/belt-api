@@ -9,6 +9,16 @@ class UsersController {
         const user = await usersService.create(req.body);
         res.status(201).send(user);
     }
+
+    async getUserById(req: Request, res: Response) {
+        if (res.locals.user && res.locals.user._id) {
+            const user = await usersService.readById(res.locals.user._id);
+            res.status(200).send(user);
+        } else {
+            const user = await usersService.readById(req.params._id);
+            res.status(200).send(user);
+        }
+    }
 }
 
 export default new UsersController();

@@ -15,6 +15,8 @@ class AuthMiddleware {
                     _id: user._id,
                     email: user.email,
                     permissionFlags: user.permissionFlags,
+                    name: user?.name,
+                    position: user?.position,
                 };
                 return next();
             } else {

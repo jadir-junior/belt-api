@@ -6,7 +6,7 @@ describe('Authentication endpoints', () => {
 
         await global.testRequest.post('/users').send({
             email: 'johndoe@email.com',
-            password: '12345',
+            password: '123456',
         });
     });
 
@@ -111,7 +111,7 @@ describe('Authentication endpoints', () => {
             it('should allow a POST to /login and return a access token and refresh token', async () => {
                 const response = await global.testRequest.post('/login').send({
                     email: 'johndoe@email.com',
-                    password: '12345',
+                    password: '123456',
                 });
 
                 expect(response.status).toBe(201);
@@ -120,6 +120,61 @@ describe('Authentication endpoints', () => {
                     refreshToken: expect.any(String),
                 });
             });
+        });
+    });
+
+    describe('Auth ME', () => {
+        let headers: any;
+
+        beforeAll(async () => {
+            const response: any = await global.testRequest.post('/login').send({
+                email: 'johndoe@email.com',
+                password: '123456',
+            });
+
+            headers = {
+                Authorization: `Bearer ${response.body.accessToken}`,
+            };
+        });
+
+        describe('token validation middleware', () => {
+            it('should allow a GET to /auth/me and get a ERROR when authorization is empty', async () => {
+                const response = await global.testRequest
+                    .get('/auth/me')
+                    .send();
+
+                expect(response.status).toBe(401);
+                expect(response.body).toEqual({
+                    error: 'Authorization header empty',
+                });
+            });
+
+            it('should allow a GET to /auth/me and get a ERROR when token is not a Bearer', async () => {
+                const response = await global.testRequest
+                    .get('/auth/me')
+                    .set({ Authorization: 'asdasd' });
+
+                expect(response.status).toBe(401);
+                expect(response.body).toEqual({
+                    error: 'Token is not a Bearer',
+                });
+            });
+        });
+
+        it('should allow a GET to /auth/me', async () => {
+            const response = await global.testRequest
+                .get('/auth/me')
+                .set(headers)
+                .send();
+
+            expect(response.status).toBe(200);
+            expect(response.body).toMatchObject(
+                expect.objectContaining({
+                    _id: expect.any(String),
+                    email: 'johndoe@email.com',
+                    permissionFlags: 1,
+                })
+            );
         });
     });
 });

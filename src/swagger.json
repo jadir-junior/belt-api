@@ -64,6 +64,49 @@
                 }
             }
         },
+        "/auth/me": {
+            "get": {
+                "summary": "Usuário autenticado",
+                "description": "Essa rota é responsavel por retorna o usuário autenticado",
+                "tags": ["Authentication"],
+                "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Erro de usuário que não tem permissões",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ErrorForbidden"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erro de usuário não autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ErrorAuthorizated"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "post": {
                 "summary": "Cadastro de usuário",
@@ -105,6 +148,22 @@
     },
     "components": {
         "schemas": {
+            "ErrorAuthorizated": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ErrorForbidden": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    }
+                }
+            },
             "Errors": {
                 "type": "object",
                 "properties": {
@@ -159,10 +218,13 @@
                     "email": {
                         "type": "string"
                     },
-                    "passowrd": {
+                    "password": {
                         "type": "string"
                     },
                     "name": {
+                        "type": "string"
+                    },
+                    "position": {
                         "type": "string"
                     },
                     "permissionFlags": {

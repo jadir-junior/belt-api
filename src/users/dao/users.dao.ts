@@ -11,6 +11,7 @@ class UsersDao {
             email: String,
             password: { type: String, select: false },
             name: String,
+            position: String,
             permissionFlags: Number,
         },
         {
@@ -35,9 +36,15 @@ class UsersDao {
         return user;
     }
 
+    async getUserById(_id: string) {
+        return this.User.findOne({ _id })
+            .select('_id email permissionFlags name position')
+            .exec();
+    }
+
     async getUserByEmailWithPassword(email: string) {
         return this.User.findOne({ email })
-            .select('_id email permissionFlags +password')
+            .select('_id email permissionFlags name position +password')
             .exec();
     }
 }
