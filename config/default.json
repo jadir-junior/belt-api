@@ -2,6 +2,11 @@
     "App": {
         "port": 3000,
         "secret": "Th1s1sS3cr3t",
+        "cloudinary": {
+            "cloud_name": "CLOUDINARY_CLOUD_NAME",
+            "api_key": "CLOUDINARY_API_KEY",
+            "api_secret": "CLOUDINARY_API_SECRET"
+        },
         "database": {
             "mongoUrl": "mongodb://localhost:27017/belt"
         },

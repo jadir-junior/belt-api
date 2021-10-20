@@ -7,6 +7,7 @@ import bodyValidationMiddleware from '../common/middleware/body.validation.middl
 import jwtMiddleware from './middleware/jwt.middleware';
 import permissionValidationMiddleware from '../common/middleware/permission.validation.middleware';
 import tokenValidationMiddleware from '../common/middleware/token.validation.middleware';
+import { upload } from '../common/services/upload-file.services';
 import userMiddleware from '../users/middleware/user.middleware';
 import usersController from '../users/controller/users.controller';
 
@@ -50,6 +51,12 @@ export class AuthRoutes extends CommonRoutesConfig {
             permissionValidationMiddleware.onlySameUserOrAdminCanDoThisAction,
             usersController.patch,
         ]);
+
+        this.app.post(
+            '/auth/me/photo',
+            upload.single('file'),
+            usersController.uploader
+        );
 
         return this.app;
     }

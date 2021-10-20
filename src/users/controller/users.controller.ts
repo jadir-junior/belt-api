@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 
+import { Multer } from 'multer';
 import argon2 from 'argon2';
+import cloudinary from 'cloudinary';
+import logger from '../../logger';
 import usersService from '../services/users.service';
 
 class UsersController {
@@ -26,6 +29,12 @@ class UsersController {
         }
         const user = await usersService.patchById(req.params.userId, req.body);
         res.status(200).send(user);
+    }
+
+    async uploader(req: Request | Express.Request | undefined, res: Response) {
+        res.status(200).send({
+            image: { url: req?.file?.path },
+        });
     }
 }
 
