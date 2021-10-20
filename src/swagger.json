@@ -28,7 +28,7 @@
                                 "auth": {
                                     "value": {
                                         "email": "johndoe@email.com",
-                                        "password": "12345acbd"
+                                        "password": "123456"
                                     }
                                 }
                             }
@@ -70,6 +70,139 @@
                 "description": "Essa rota é responsavel por retorna o usuário autenticado",
                 "tags": ["Authentication"],
                 "security": [{ "bearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Erro de usuário que não tem permissões",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ErrorForbidden"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erro de usuário não autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ErrorAuthorizated"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/me/photo/{userId}": {
+            "post": {
+                "summary": "Upload de foto do usuário",
+                "description": "Essa rota é responsável por atualizar a foto do usuário",
+                "consumes": ["multipart/form-data"],
+                "tags": ["Authentication"],
+                "security": [{ "bearerAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "id do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "type": "file",
+                        "required": true,
+                        "description": "A foto para upload"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Erro de usuário que não tem permissões",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ErrorForbidden"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erro de usuário não autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/ErrorAuthorizated"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/me/{userId}": {
+            "patch": {
+                "summary": "Atualização do usuário logado",
+                "description": "Essa rota é responsável por atualizar o usuário logado",
+                "tags": ["Authentication"],
+                "security": [{ "bearerAuth": [] }],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "id do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            },
+                            "examples": {
+                                "user": {
+                                    "value": {
+                                        "name": "John Doe",
+                                        "position": "CTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -229,6 +362,9 @@
                     },
                     "permissionFlags": {
                         "type": "number"
+                    },
+                    "photo": {
+                        "type": "string"
                     },
                     "_id": {
                         "type": "string"
