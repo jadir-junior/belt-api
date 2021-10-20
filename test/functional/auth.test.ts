@@ -1,12 +1,21 @@
 import usersDao from '@src/users/dao/users.dao';
 
 describe('Authentication endpoints', () => {
+    let paramUserId: string;
+
     beforeAll(async () => {
         await usersDao.User.deleteMany({});
 
-        await global.testRequest.post('/users').send({
+        const response = await global.testRequest.post('/users').send({
             email: 'johndoe@email.com',
             password: '123456',
+        });
+
+        paramUserId = response.body._id;
+
+        await global.testRequest.post('/users').send({
+            email: 'mickjunior@email.com',
+            password: 'abcdef',
         });
     });
 
@@ -138,43 +147,164 @@ describe('Authentication endpoints', () => {
         });
 
         describe('token validation middleware', () => {
-            it('should allow a GET to /auth/me and get a ERROR when authorization is empty', async () => {
-                const response = await global.testRequest
-                    .get('/auth/me')
-                    .send();
+            describe('GET', () => {
+                it('should allow a GET to /auth/me and get a ERROR when authorization is empty', async () => {
+                    const response = await global.testRequest
+                        .get('/auth/me')
+                        .send();
 
-                expect(response.status).toBe(401);
-                expect(response.body).toEqual({
-                    error: 'Authorization header empty',
+                    expect(response.status).toBe(401);
+                    expect(response.body).toEqual({
+                        error: 'Authorization header empty',
+                    });
+                });
+
+                it('should allow a GET to /auth/me and get a ERROR when token is not a Bearer', async () => {
+                    const response = await global.testRequest
+                        .get('/auth/me')
+                        .set({ Authorization: 'asdasd' });
+
+                    expect(response.status).toBe(401);
+                    expect(response.body).toEqual({
+                        error: 'Token is not a Bearer',
+                    });
                 });
             });
 
-            it('should allow a GET to /auth/me and get a ERROR when token is not a Bearer', async () => {
+            it('should allow a GET to /auth/me', async () => {
                 const response = await global.testRequest
                     .get('/auth/me')
-                    .set({ Authorization: 'asdasd' });
+                    .set(headers)
+                    .send();
 
-                expect(response.status).toBe(401);
-                expect(response.body).toEqual({
-                    error: 'Token is not a Bearer',
-                });
+                expect(response.status).toBe(200);
+                expect(response.body).toMatchObject(
+                    expect.objectContaining({
+                        _id: expect.any(String),
+                        email: 'johndoe@email.com',
+                        permissionFlags: 1,
+                    })
+                );
             });
         });
 
-        it('should allow a GET to /auth/me', async () => {
-            const response = await global.testRequest
-                .get('/auth/me')
-                .set(headers)
-                .send();
+        describe('PATCH', () => {
+            it('should allow a PATCH to /auth/me and receive a ERROR not a email', async () => {
+                const response = await global.testRequest
+                    .patch(`/auth/me/${paramUserId}`)
+                    .set(headers)
+                    .send({
+                        email: 'wrongemail',
+                    });
 
-            expect(response.status).toBe(200);
-            expect(response.body).toMatchObject(
-                expect.objectContaining({
+                expect(response.status).toBe(400);
+                expect(response.body).toEqual({
+                    errors: [
+                        {
+                            location: 'body',
+                            msg: 'Invalid value',
+                            param: 'email',
+                            value: 'wrongemail',
+                        },
+                    ],
+                });
+            });
+
+            it('should allow a PATCH to /auth/me and receive a ERROR password', async () => {
+                const response = await global.testRequest
+                    .patch(`/auth/me/${paramUserId}`)
+                    .set(headers)
+                    .send({
+                        password: '1234',
+                    });
+
+                expect(response.status).toBe(400);
+                expect(response.body).toEqual({
+                    errors: [
+                        {
+                            location: 'body',
+                            msg: 'Password must be 5 characters',
+                            param: 'password',
+                            value: '1234',
+                        },
+                    ],
+                });
+            });
+
+            it('should allow a PATCH to /auth/me and receive a ERROR if name is not string', async () => {
+                const response = await global.testRequest
+                    .patch(`/auth/me/${paramUserId}`)
+                    .set(headers)
+                    .send({
+                        name: 12434,
+                    });
+
+                expect(response.status).toBe(400);
+                expect(response.body).toEqual({
+                    errors: [
+                        {
+                            location: 'body',
+                            msg: 'Invalid value',
+                            param: 'name',
+                            value: 12434,
+                        },
+                    ],
+                });
+            });
+
+            it('should allow a PATCH to /auth/me and receive a ERROR if position is not string', async () => {
+                const response = await global.testRequest
+                    .patch(`/auth/me/${paramUserId}`)
+                    .set(headers)
+                    .send({
+                        position: 12434,
+                    });
+
+                expect(response.status).toBe(400);
+                expect(response.body).toEqual({
+                    errors: [
+                        {
+                            location: 'body',
+                            msg: 'Invalid value',
+                            param: 'position',
+                            value: 12434,
+                        },
+                    ],
+                });
+            });
+
+            it('should allow a PATCH to /auth/me and receive a ERROR if I change email another', async () => {
+                const response = await global.testRequest
+                    .patch(`/auth/me/${paramUserId}`)
+                    .set(headers)
+                    .send({
+                        email: 'mickjunior@email.com',
+                    });
+
+                expect(response.status).toBe(400);
+                expect(response.body).toEqual({
+                    errors: 'Invalid email',
+                });
+            });
+
+            it('should allow a PATCH to /auth/me', async () => {
+                const response = await global.testRequest
+                    .patch(`/auth/me/${paramUserId}`)
+                    .set(headers)
+                    .send({
+                        name: 'John Doe',
+                        position: 'CTO',
+                    });
+
+                expect(response.status).toBe(200);
+                expect(response.body).toEqual({
                     _id: expect.any(String),
                     email: 'johndoe@email.com',
                     permissionFlags: 1,
-                })
-            );
+                    name: 'John Doe',
+                    position: 'CTO',
+                });
+            });
         });
     });
 });

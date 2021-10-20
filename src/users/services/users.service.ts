@@ -1,5 +1,6 @@
 import { CRUD } from '@src/common/interfaces/crud.interface';
 import { CreateUserDto } from '../dto/create.user.dto';
+import { PatchUserDto } from '../dto/patch.user.dto';
 import usersDao from '../dao/users.dao';
 
 class UsersService implements CRUD {
@@ -13,6 +14,14 @@ class UsersService implements CRUD {
 
     async getUserByEmailWithPassword(email: string) {
         return usersDao.getUserByEmailWithPassword(email);
+    }
+
+    async getUserByEmail(email: string) {
+        return usersDao.getUserByEmail(email);
+    }
+
+    async patchById(id: string, resource: PatchUserDto) {
+        return usersDao.updateUserById(id, resource);
     }
 }
 

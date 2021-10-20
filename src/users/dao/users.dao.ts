@@ -1,7 +1,9 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 import { CreateUserDto } from '../dto/create.user.dto';
+import { PatchUserDto } from '../dto/patch.user.dto';
 import { PermissionFlags } from '../../common/enums/common.permissionflags.enum';
+import { PutUserDto } from '../dto/put.user.dto';
 import { User } from '../types/user.types';
 
 interface UserDocument extends User, Document {}
@@ -13,6 +15,7 @@ class UsersDao {
             name: String,
             position: String,
             permissionFlags: Number,
+            photo: String,
         },
         {
             timestamps: true,
@@ -38,14 +41,32 @@ class UsersDao {
 
     async getUserById(_id: string) {
         return this.User.findOne({ _id })
-            .select('_id email permissionFlags name position')
+            .select('_id email permissionFlags name position photo')
             .exec();
     }
 
     async getUserByEmailWithPassword(email: string) {
         return this.User.findOne({ email })
-            .select('_id email permissionFlags name position +password')
+            .select('_id email permissionFlags name position photo +password')
             .exec();
+    }
+
+    async getUserByEmail(email: string) {
+        return this.User.findOne({ email }).exec();
+    }
+
+    async updateUserById(
+        userId: string,
+        userFields: PatchUserDto | PutUserDto
+    ) {
+        const existingUser = await this.User.findOneAndUpdate(
+            { _id: userId },
+            { $set: userFields },
+            { new: true }
+        )
+            .select('_id email permissionFlags name position photo')
+            .exec();
+        return existingUser;
     }
 }
 
