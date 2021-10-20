@@ -15,6 +15,7 @@ class UsersDao {
             name: String,
             position: String,
             permissionFlags: Number,
+            photo: String,
         },
         {
             timestamps: true,
@@ -40,13 +41,13 @@ class UsersDao {
 
     async getUserById(_id: string) {
         return this.User.findOne({ _id })
-            .select('_id email permissionFlags name position')
+            .select('_id email permissionFlags name position photo')
             .exec();
     }
 
     async getUserByEmailWithPassword(email: string) {
         return this.User.findOne({ email })
-            .select('_id email permissionFlags name position +password')
+            .select('_id email permissionFlags name position photo +password')
             .exec();
     }
 
@@ -63,7 +64,7 @@ class UsersDao {
             { $set: userFields },
             { new: true }
         )
-            .select('_id email permissionFlags name position')
+            .select('_id email permissionFlags name position photo')
             .exec();
         return existingUser;
     }

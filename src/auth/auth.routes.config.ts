@@ -1,5 +1,6 @@
 import { Application } from 'express';
 import { CommonRoutesConfig } from '../common/common.routes.config';
+import UploadFileService from '../common/services/upload.file.service';
 import authController from './controller/auth.controller';
 import authMiddleware from './middleware/auth.middleware';
 import { body } from 'express-validator';
@@ -7,7 +8,6 @@ import bodyValidationMiddleware from '../common/middleware/body.validation.middl
 import jwtMiddleware from './middleware/jwt.middleware';
 import permissionValidationMiddleware from '../common/middleware/permission.validation.middleware';
 import tokenValidationMiddleware from '../common/middleware/token.validation.middleware';
-import { upload } from '../common/services/upload-file.services';
 import userMiddleware from '../users/middleware/user.middleware';
 import usersController from '../users/controller/users.controller';
 
@@ -53,9 +53,11 @@ export class AuthRoutes extends CommonRoutesConfig {
         ]);
 
         this.app.post(
-            '/auth/me/photo',
-            upload.single('file'),
-            usersController.uploader
+            '/auth/me/photo/:userId',
+            jwtMiddleware.validJwtNeeded,
+            permissionValidationMiddleware.onlySameUserOrAdminCanDoThisAction,
+            UploadFileService.upload.single('file'),
+            usersController.uploadProfilePhoto
         );
 
         return this.app;

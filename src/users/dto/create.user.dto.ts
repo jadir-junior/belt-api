@@ -4,4 +4,5 @@ export interface CreateUserDto {
     name?: string;
     position?: string;
     permissionFlags?: number;
+    photo?: string;
 }

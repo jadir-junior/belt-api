@@ -5,4 +5,5 @@ export interface PutUserDto {
     name: string;
     position: string;
     permissionFlags: number;
+    photo: string;
 }

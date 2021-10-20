@@ -31,10 +31,14 @@ class UsersController {
         res.status(200).send(user);
     }
 
-    async uploader(req: Request | Express.Request | undefined, res: Response) {
-        res.status(200).send({
-            image: { url: req?.file?.path },
+    async uploadProfilePhoto(
+        req: Request | Express.Request | undefined,
+        res: Response
+    ) {
+        const user = await usersService.patchById(res.locals.jwt._id, {
+            photo: req?.file?.path,
         });
+        res.status(200).send(user);
     }
 }
 
