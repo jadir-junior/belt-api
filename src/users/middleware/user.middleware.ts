@@ -9,7 +9,7 @@ class UsersMiddleware {
         next: NextFunction
     ) {
         const user = await usersService.getUserByEmail(req.body.email);
-        if (user && user._id === res.locals.jwt._id) {
+        if (user && user._id.toJSON() === res.locals.jwt._id) {
             res.locals.user = user;
             next();
         } else {
