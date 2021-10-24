@@ -1,0 +1,42 @@
+name: ci
+on: [pull_request]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [14.x]
+                mongodb-version: [4.2]
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v2
+
+            - name: Setup Node ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Start MongoDB
+              uses: supercharge/mongodb-github-action@1.1.0
+              with:
+                  mongodb-version: ${{ matrix.mongodb-version }}
+
+            - uses: actions/cache@v2
+              id: yarn-cache
+              with:
+                  path: |
+                      ~/cache
+                      !~/cache/exclude
+                      **/node_modules
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn-
+
+            - name: Install dependencies
+              run: yarn install
+
+            - name: Tests
+              run: yarn test:functional
